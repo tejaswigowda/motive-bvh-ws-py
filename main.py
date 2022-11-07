@@ -28,7 +28,7 @@ import websocket
 
 ws = websocket.WebSocket()
 
-ws.connect("ws://http://44.225.155.76:3000/bvh_server")
+ws.connect("ws://44.225.155.76:3000/bvh_server")
 
 
 
