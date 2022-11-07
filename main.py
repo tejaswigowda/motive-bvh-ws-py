@@ -24,6 +24,13 @@ from NatNetClient import NatNetClient
 import DataDescriptions
 import MoCapData
 import json
+import websocket
+
+ws = websocket.WebSocket()
+
+ws.connect("ws://http://44.225.155.76:3000/bvh_server")
+
+
 
 # This is a callback function that gets connected to the NatNet client
 # and called once per mocap frame.
@@ -34,6 +41,7 @@ def receive_new_frame(data_dict):
                 "labeledMarkerCount", "timecode", "timecodeSub", "timestamp", "isRecording", "trackedModelsChanged" ]
     print(MoCapData.bvh_output)
     MoCapData.bvh_output = ""
+    ws.send(MoCapData.bvh_output)
     dump_args = False
     if dump_args == True:
         for key in data_dict:
