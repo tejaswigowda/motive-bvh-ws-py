@@ -30,18 +30,18 @@ import math
 def euler_from_quaternion(x, y, z, w):
     t0 = +2.0 * (w * x + y * z)
     t1 = +1.0 - 2.0 * (x * x + y * y)
-    roll_x = math.atan2(t0, t1)
+    roll_x = 180 * math.atan2(t0, t1)/math.pi
 
     t2 = +2.0 * (w * y - z * x)
     t2 = +1.0 if t2 > +1.0 else t2
     t2 = -1.0 if t2 < -1.0 else t2
-    pitch_y = math.asin(t2)
+    pitch_y = 180 * math.asin(t2) / math.pi
     
     t3 = +2.0 * (w * z + x * y)
     t4 = +1.0 - 2.0 * (y * y + z * z)
-    yaw_z = math.atan2(t3, t4)
+    yaw_z = 180 * math.atan2(t3, t4) / math.pi
 
-    return roll_x, pitch_y, yaw_z # in radians
+    return yaw_z, roll_x, pitch_y # in degrees
 
 bvh_output = ""
 rbno = -1
@@ -248,7 +248,7 @@ class RigidBody:
         x =  "%sPosition      : [%3.2f, %3.2f, %3.2f]\n"% (out_tab_str, self.pos[0], self.pos[1], self.pos[2] )
         out_str += x
         if rbno == 0:
-            bvh_output += "%3.5f %3.5f %3.5f "% ( self.pos[0], self.pos[1], self.pos[2] )
+            bvh_output += "%3.5f %3.5f %3.5f "% ( self.pos[0]*100, self.pos[1]*100, self.pos[2]*100 )
 
         y = "%sOrientation   : [%3.2f, %3.2f, %3.2f, %3.2f "% (out_tab_str, self.rot[0], self.rot[1], self.rot[2], self.rot[3] )
         out_str += y 

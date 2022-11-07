@@ -26,9 +26,9 @@ import MoCapData
 import json
 import websocket
 
-ws = websocket.WebSocket("ws://44.225.155.76:3000/bvh_server")
+ws = websocket.WebSocket()
 
-ws.connect()
+ws.connect("ws://44.225.155.76:3000/bvh_server")
 
 
 
@@ -40,8 +40,8 @@ def receive_new_frame(data_dict):
     order_list=[ "frameNumber", "markerSetCount", "unlabeledMarkersCount", "rigidBodyCount", "skeletonCount",
                 "labeledMarkerCount", "timecode", "timecodeSub", "timestamp", "isRecording", "trackedModelsChanged" ]
     print(MoCapData.bvh_output)
-    MoCapData.bvh_output = ""
     ws.send(MoCapData.bvh_output)
+    MoCapData.bvh_output = ""
     dump_args = False
     if dump_args == True:
         for key in data_dict:
