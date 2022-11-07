@@ -25,8 +25,26 @@
 import copy
 import hashlib
 import random
+import math
 
-bvh_output = "";
+def euler_from_quaternion(x, y, z, w):
+    t0 = +2.0 * (w * x + y * z)
+    t1 = +1.0 - 2.0 * (x * x + y * y)
+    roll_x = math.atan2(t0, t1)
+
+    t2 = +2.0 * (w * y - z * x)
+    t2 = +1.0 if t2 > +1.0 else t2
+    t2 = -1.0 if t2 < -1.0 else t2
+    pitch_y = math.asin(t2)
+    
+    t3 = +2.0 * (w * z + x * y)
+    t4 = +1.0 - 2.0 * (y * y + z * z)
+    yaw_z = math.atan2(t3, t4)
+    
+    return roll_x, pitch_y, yaw_z # in radians
+
+bvh_output = ""
+rbno = -1
 
 
 K_SKIP = [0,0,1]
@@ -218,7 +236,7 @@ class RigidBody:
 
 
     def get_as_string(self, tab_str=0, level=0):
-        global bvh_output
+        global bvh_output, rbno
         out_tab_str = get_tab_str(tab_str, level)
         out_tab_str2 = get_tab_str(tab_str, level+1)
 
@@ -229,10 +247,12 @@ class RigidBody:
         # Position and orientation
         x =  "%sPosition      : [%3.2f, %3.2f, %3.2f]\n"% (out_tab_str, self.pos[0], self.pos[1], self.pos[2] )
         out_str += x
-        bvh_output += x
+        if rbno == 0:
+            bvh_output += "%3.2f %3.2f %3.2f "% ( self.pos[0], self.pos[1], self.pos[2] )
+
         y = "%sOrientation   : [%3.2f, %3.2f, %3.2f, %3.2f]\n"% (out_tab_str, self.rot[0], self.rot[1], self.rot[2], self.rot[3] )
-        out_str += y
-        bvh_output += y
+        out_str += y 
+        bvh_output += y + str(rbno)
         marker_count = len(self.rb_marker_list)
         marker_count_range = range( 0, marker_count )
 
@@ -275,7 +295,7 @@ class RigidBodyData:
         rigid_body_count=len(self.rigid_body_list)
         out_str += "%sRigid Body Count: %3.1d\n"%(out_tab_str, rigid_body_count)
         for rigid_body in self.rigid_body_list:
-            out_str += rigid_body.get_as_string(tab_str, level+1)
+            out_str += rigid_body.get_as_string(tab_str, level+1, rigid_body_count)
         return out_str
 
 class Skeleton:
@@ -290,6 +310,7 @@ class Skeleton:
 
 
     def get_as_string(self, tab_str="  ", level=0):
+        global rbno
         out_tab_str = get_tab_str(tab_str, level)
         out_tab_str2 = get_tab_str(tab_str, level+1)
         out_str=""
@@ -297,6 +318,7 @@ class Skeleton:
         rigid_body_count=len(self.rigid_body_list)
         out_str += "%sRigid Body Count: %3.1d\n"%(out_tab_str, rigid_body_count)
         for rb_num in range(rigid_body_count):
+            rbno = rb_num
             out_str += "%sRigid Body %3.1d\n"%(out_tab_str2, rb_num)
             out_str += self.rigid_body_list[rb_num].get_as_string(tab_str, level+2)
         return out_str
