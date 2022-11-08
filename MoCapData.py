@@ -45,8 +45,8 @@ def euler_from_quaternion(x, y, z, w):
     z = 180 * math.atan2(t3, t4)
 
 
-    #return yaw_z, roll_x, pitch_y # in degrees
-    return z, x, y # in radians
+    return roll_x, pitch_y, yaw_z # in degrees
+    #return x, y, z # in radians
 
 
 bvh_output = ""
@@ -258,8 +258,8 @@ class RigidBody:
 
         y = "%sOrientation   : [%3.2f, %3.2f, %3.2f, %3.2f "% (out_tab_str, self.rot[0], self.rot[1], self.rot[2], self.rot[3] )
         out_str += y 
-        z = euler_from_quaternion(self.rot[0], self.rot[1], self.rot[2], self.rot[3] )
-        bvh_output += "%3.6f %3.6f %3.6f "% (z[0], z[1], z[2] )
+        z = euler_from_quaternion(self.rot[2], self.rot[1], self.rot[0], self.rot[3] )
+        bvh_output += "%3.6f %3.6f %3.6f "% (z[2], -z[0], -z[1] )
         marker_count = len(self.rb_marker_list)
         marker_count_range = range( 0, marker_count )
 
