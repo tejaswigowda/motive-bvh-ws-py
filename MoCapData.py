@@ -26,27 +26,18 @@ import copy
 import hashlib
 import random
 import math
+import transformations
 
-def euler_from_quaternion(x, y, z, w):
-    t0 = +2.0 * (w * x + y * z)
-    t1 = +1.0 - 2.0 * (x * x + y * y)
-    roll_x = 180 * math.atan2(t0, t1)/math.pi
-    x = math.atan2(t0,t1)
+def quaternion_to_euler(qx, qy, qz, qw):
+    """Convert quaternion (qx, qy, qz, qw) angle to euclidean (x, y, z) angles, in degrees.
+    Equation from http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/"""
 
-    t2 = +2.0 * (w * y - z * x)
-    t2 = +1.0 if t2 > +1.0 else t2
-    t2 = -1.0 if t2 < -1.0 else t2
-    pitch_y = 180 * math.asin(t2) / math.pi
-    y =  math.asin(t2)
+    heading = math.atan2(2*qy*qw-2*qx*qz , 1 - 2*qy**2 - 2*qz**2)
+    attitude = math.asin(2*qx*qy + 2*qz*qw)
+    bank = math.atan2(2*qx*qw-2*qy*qz , 1 - 2*qx**2 - 2*qz**2)
 
-    t3 = +2.0 * (w * z + x * y)
-    t4 = +1.0 - 2.0 * (y * y + z * z)
-    yaw_z = 180 * math.atan2(t3, t4) / math.pi
-    z = 180 * math.atan2(t3, t4)
+    return [math.degrees(angle) for angle in [attitude, heading, bank]]  # TODO: May need to change some things to negative to deal with left-handed coordinate system.
 
-
-    return roll_x, pitch_y, yaw_z # in degrees
-    #return x, y, z # in radians
 
 
 bvh_output = ""
@@ -258,8 +249,8 @@ class RigidBody:
 
         y = "%sOrientation   : [%3.2f, %3.2f, %3.2f, %3.2f "% (out_tab_str, self.rot[0], self.rot[1], self.rot[2], self.rot[3] )
         out_str += y 
-        z = euler_from_quaternion(self.rot[0], self.rot[1], self.rot[2], self.rot[3] )
-        bvh_output += "%3.6f %3.6f %3.6f "% (z[2], z[0], z[1] )
+        z = transformations.euler_from_quaternion([self.rot[0], self.rot[1], self.rot[2], self.rot[3]], axes="rzxy" )
+        bvh_output += "%3.6f %3.6f %3.6f "% (z[2]*180/math.pi, z[0]*180/math.pi, z[1]*180/math.pi )
         marker_count = len(self.rb_marker_list)
         marker_count_range = range( 0, marker_count )
 
