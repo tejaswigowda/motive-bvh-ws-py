@@ -247,7 +247,7 @@ class RigidBody:
         if rbno == 0:
             bvh_output += "%3.6f %3.6f %3.6f "% ( self.pos[0]*100, self.pos[1]*100, self.pos[2]*100 )
 
-        y = "%sOrientation   : [%3.2f, %3.2f, %3.2f, %3.2f "% (out_tab_str, self.rot[0], self.rot[1], self.rot[2], self.rot[3] )
+        y = "%sOrientation   : [%3.6f, %3.6f, %3.6f, %3.6f "% (out_tab_str, self.rot[0], self.rot[1], self.rot[2], self.rot[3] )
         out_str += y 
         z = transformations.euler_from_quaternion([self.rot[0], self.rot[1], self.rot[2], self.rot[3]], axes="rzxy" )
         bvh_output += "%3.6f %3.6f %3.6f "% (z[2]*180/math.pi, z[0]*180/math.pi, z[1]*180/math.pi )
