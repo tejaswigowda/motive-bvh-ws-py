@@ -26,17 +26,12 @@ import copy
 import hashlib
 import random
 import math
-import transformations
+from scipy.spatial.transform import Rotation as R
 
-def quaternion_to_euler(qx, qy, qz, qw):
-    """Convert quaternion (qx, qy, qz, qw) angle to euclidean (x, y, z) angles, in degrees.
-    Equation from http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/"""
 
-    heading = math.atan2(2*qy*qw-2*qx*qz , 1 - 2*qy**2 - 2*qz**2)
-    attitude = math.asin(2*qx*qy + 2*qz*qw)
-    bank = math.atan2(2*qx*qw-2*qy*qz , 1 - 2*qx**2 - 2*qz**2)
-
-    return [math.degrees(angle) for angle in [attitude, heading, bank]]  # TODO: May need to change some things to negative to deal with left-handed coordinate system.
+def getbvhEuler(a, b, c, d):
+    r = R.from_quat([a, b, c, d])
+    return r.as_euler('zyx', degrees=False)
 
 
 
@@ -249,7 +244,7 @@ class RigidBody:
 
         y = "%sOrientation   : [%3.6f, %3.6f, %3.6f, %3.6f "% (out_tab_str, self.rot[0], self.rot[1], self.rot[2], self.rot[3] )
         out_str += y 
-        z = transformations.euler_from_quaternion([self.rot[0], self.rot[1], self.rot[2], self.rot[3]], axes="rzxy" )
+        z = getbvhEuler(self.rot[1], self.rot[0], self.rot[2], self.rot[3])
         bvh_output += "%3.6f %3.6f %3.6f "% (z[2]*180/math.pi, z[0]*180/math.pi, z[1]*180/math.pi )
         marker_count = len(self.rb_marker_list)
         marker_count_range = range( 0, marker_count )
