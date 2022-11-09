@@ -245,7 +245,7 @@ class RigidBody:
         y = "%sOrientation   : [%3.6f, %3.6f, %3.6f, %3.6f "% (out_tab_str, self.rot[0], self.rot[1], self.rot[2], self.rot[3] )
         out_str += y 
         z = getbvhEuler(self.rot[1], self.rot[0], self.rot[2], self.rot[3])
-        bvh_output += "%3.6f %3.6f %3.6f "% (z[2]*180/math.pi, z[0]*180/math.pi, z[1]*180/math.pi )
+        bvh_output += "%3.6f %3.6f %3.6f "% (z[0]*180/math.pi, z[1]*180/math.pi, z[2]*180/math.pi )
         marker_count = len(self.rb_marker_list)
         marker_count_range = range( 0, marker_count )
 
