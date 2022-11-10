@@ -38,7 +38,9 @@ def receive_new_frame(data_dict):
     order_list=[ "frameNumber", "markerSetCount", "unlabeledMarkersCount", "rigidBodyCount", "skeletonCount",
                 "labeledMarkerCount", "timecode", "timecodeSub", "timestamp", "isRecording", "trackedModelsChanged" ]
     print(MoCapData.bvh_output)
-    ws.send(MoCapData.bvh_output)
+    x = MoCapData.bvh_output.split(" ")
+    y = x[0:50] + x[54:65]  + x[51:53]
+    ws.send(" ".join(y))
     MoCapData.bvh_output = ""
     dump_args = False
     if dump_args == True:
