@@ -28,7 +28,7 @@ import websocket
 
 ws = websocket.WebSocket()
 
-ws.connect("ws://44.225.155.76:3000/bvh_server")
+ws.connect("ws://54.213.38.191:3000/bvh_server")
 
 # This is a callback function that gets connected to the NatNet client
 # and called once per mocap frame.
